@@ -1,0 +1,751 @@
+<!DOCTYPE html>
+<html lang="en">
+<head>
+  <meta charset="UTF-8">
+  <meta name="viewport" content="width=device-width, initial-scale=1.0">
+  <title>Reservations | Zenthos Restaurant</title>
+  <meta name="description" content="Reserve your table at Zenthos Restaurant in Paralia Katerini, Greece. Book online for an unforgettable dining experience.">
+
+  <!-- Google Fonts -->
+  <link rel="preconnect" href="https://fonts.googleapis.com">
+  <link rel="preconnect" href="https://fonts.gstatic.com" crossorigin>
+  <link href="https://fonts.googleapis.com/css2?family=Playfair+Display:ital,wght@0,400;0,700;0,900;1,400;1,700&family=Lato:wght@300;400;700&display=swap" rel="stylesheet">
+
+  <!-- Font Awesome Icons -->
+  <link rel="stylesheet" href="https://cdnjs.cloudflare.com/ajax/libs/font-awesome/6.5.1/css/all.min.css">
+
+  <style>
+    /* ============================================
+       CSS VARIABLES
+    ============================================ */
+    :root {
+      --navy-dark: #0a0e1a;
+      --navy: #0a1628;
+      --navy-light: #1a2744;
+      --gold: #c9a84c;
+      --gold-light: #e8c97a;
+      --cream: #fdf8f0;
+      --white: #ffffff;
+      --text-muted: #8a9bb5;
+      --font-display: 'Playfair Display', Georgia, serif;
+      --font-body: 'Lato', 'Helvetica Neue', sans-serif;
+    }
+
+    /* ============================================
+       RESET & BASE
+    ============================================ */
+    *, *::before, *::after {
+      margin: 0;
+      padding: 0;
+      box-sizing: border-box;
+    }
+
+    html {
+      scroll-behavior: smooth;
+      scroll-padding-top: 70px;
+    }
+
+    body {
+      font-family: var(--font-body);
+      color: #333;
+      line-height: 1.6;
+      overflow-x: hidden;
+    }
+
+    img {
+      max-width: 100%;
+      height: auto;
+    }
+
+    a {
+      text-decoration: none;
+      color: inherit;
+    }
+
+    /* ============================================
+       SCROLL REVEAL
+    ============================================ */
+    .reveal {
+      opacity: 0;
+      transform: translateY(30px);
+      transition: opacity 0.8s ease, transform 0.8s ease;
+    }
+
+    .reveal.visible {
+      opacity: 1;
+      transform: translateY(0);
+    }
+
+    /* ============================================
+       NAVBAR
+    ============================================ */
+    .navbar {
+      position: fixed;
+      top: 0;
+      left: 0;
+      width: 100%;
+      z-index: 1000;
+      padding: 15px 40px;
+      display: flex;
+      align-items: center;
+      justify-content: space-between;
+      transition: background-color 0.4s ease, padding 0.3s ease, box-shadow 0.3s ease;
+    }
+
+    .navbar.scrolled {
+      background-color: var(--navy-dark);
+      padding: 10px 40px;
+      box-shadow: 0 2px 20px rgba(0, 0, 0, 0.3);
+    }
+
+    .navbar__logo img {
+      height: 70px;
+      transition: height 0.3s ease;
+    }
+
+    .navbar.scrolled .navbar__logo img {
+      height: 55px;
+    }
+
+    .navbar__links {
+      display: flex;
+      list-style: none;
+      gap: 30px;
+    }
+
+    .navbar__links a {
+      color: var(--white);
+      font-family: var(--font-body);
+      font-size: 0.95rem;
+      font-weight: 400;
+      letter-spacing: 0.5px;
+      text-transform: uppercase;
+      position: relative;
+      transition: color 0.3s ease;
+    }
+
+    .navbar__links a::after {
+      content: '';
+      position: absolute;
+      bottom: -4px;
+      left: 0;
+      width: 0;
+      height: 2px;
+      background: var(--gold);
+      transition: width 0.3s ease;
+    }
+
+    .navbar__links a:hover {
+      color: var(--gold);
+    }
+
+    .navbar__links a:hover::after {
+      width: 100%;
+    }
+
+    /* Hamburger */
+    .hamburger {
+      display: none;
+      flex-direction: column;
+      cursor: pointer;
+      gap: 5px;
+      z-index: 1001;
+    }
+
+    .hamburger span {
+      width: 28px;
+      height: 2px;
+      background: var(--white);
+      transition: all 0.3s ease;
+    }
+
+    .hamburger.active span:nth-child(1) {
+      transform: rotate(45deg) translate(5px, 5px);
+    }
+
+    .hamburger.active span:nth-child(2) {
+      opacity: 0;
+    }
+
+    .hamburger.active span:nth-child(3) {
+      transform: rotate(-45deg) translate(5px, -5px);
+    }
+
+    /* ============================================
+       HERO SECTION (SHORT BANNER)
+    ============================================ */
+    .hero {
+      position: relative;
+      height: 40vh;
+      min-height: 280px;
+      display: flex;
+      align-items: center;
+      justify-content: center;
+      text-align: center;
+      background: var(--navy-dark);
+      overflow: hidden;
+    }
+
+    .hero__content {
+      position: relative;
+      z-index: 2;
+    }
+
+    .hero__title {
+      font-family: var(--font-display);
+      font-size: clamp(2rem, 5vw, 3.5rem);
+      font-weight: 700;
+      color: var(--gold);
+      margin-bottom: 10px;
+      animation: fadeInUp 1s ease forwards;
+    }
+
+    .hero__subtitle {
+      font-family: var(--font-body);
+      font-size: clamp(0.95rem, 2vw, 1.15rem);
+      color: var(--text-muted);
+      font-weight: 300;
+      letter-spacing: 1px;
+      animation: fadeInUp 1s ease 0.2s forwards;
+      opacity: 0;
+    }
+
+    @keyframes fadeInUp {
+      from {
+        opacity: 0;
+        transform: translateY(30px);
+      }
+      to {
+        opacity: 1;
+        transform: translateY(0);
+      }
+    }
+
+    /* ============================================
+       RESERVATION SECTION
+    ============================================ */
+    .reservation-section {
+      background: var(--cream);
+      padding: 80px 20px;
+    }
+
+    .reservation-wrapper {
+      max-width: 600px;
+      margin: 0 auto;
+    }
+
+    .form-row {
+      display: grid;
+      grid-template-columns: 1fr 1fr;
+      gap: 20px;
+    }
+
+    .form-group {
+      margin-bottom: 22px;
+      position: relative;
+    }
+
+    .form-group label {
+      display: block;
+      font-family: var(--font-body);
+      font-weight: 700;
+      color: var(--navy);
+      margin-bottom: 6px;
+      font-size: 0.9rem;
+      letter-spacing: 0.3px;
+    }
+
+    .form-group input,
+    .form-group select,
+    .form-group textarea {
+      width: 100%;
+      padding: 14px;
+      border: 1px solid #ccc;
+      border-radius: 6px;
+      font-family: var(--font-body);
+      font-size: 0.95rem;
+      color: #333;
+      background: var(--white);
+      transition: border-color 0.3s ease, box-shadow 0.3s ease;
+      outline: none;
+    }
+
+    .form-group input:focus,
+    .form-group select:focus,
+    .form-group textarea:focus {
+      border-color: var(--gold);
+      box-shadow: 0 0 0 3px rgba(201, 168, 76, 0.15);
+    }
+
+    .form-group textarea {
+      resize: vertical;
+      min-height: 110px;
+    }
+
+    .form-group .error-message {
+      display: none;
+      color: #d63031;
+      font-size: 0.8rem;
+      margin-top: 5px;
+    }
+
+    .form-group.has-error input,
+    .form-group.has-error select,
+    .form-group.has-error textarea {
+      border-color: #d63031;
+    }
+
+    .form-group.has-error .error-message {
+      display: block;
+    }
+
+    .btn-submit {
+      display: block;
+      width: 100%;
+      padding: 16px;
+      background: var(--gold);
+      color: var(--navy);
+      border: none;
+      border-radius: 6px;
+      font-family: var(--font-body);
+      font-size: 1rem;
+      font-weight: 700;
+      text-transform: uppercase;
+      letter-spacing: 1.5px;
+      cursor: pointer;
+      transition: background 0.3s ease, transform 0.2s ease;
+    }
+
+    .btn-submit:hover {
+      background: var(--gold-light);
+      transform: translateY(-2px);
+    }
+
+    /* ============================================
+       THANK YOU MESSAGE
+    ============================================ */
+    .thank-you {
+      display: none;
+      text-align: center;
+      padding: 60px 20px;
+      max-width: 500px;
+      margin: 0 auto;
+    }
+
+    .thank-you.visible {
+      display: block;
+    }
+
+    .thank-you__icon {
+      font-size: 3.5rem;
+      color: var(--gold);
+      margin-bottom: 20px;
+    }
+
+    .thank-you__heading {
+      font-family: var(--font-display);
+      font-size: 2.2rem;
+      color: var(--gold);
+      margin-bottom: 12px;
+    }
+
+    .thank-you__text {
+      color: var(--text-muted);
+      font-size: 1.05rem;
+      line-height: 1.7;
+    }
+
+    /* ============================================
+       FOOTER
+    ============================================ */
+    .footer {
+      background: var(--navy-dark);
+      text-align: center;
+      padding: 50px 40px 30px;
+    }
+
+    .footer__logo img {
+      height: 45px;
+      margin-bottom: 15px;
+    }
+
+    .footer__tagline {
+      font-family: var(--font-display);
+      font-style: italic;
+      color: var(--gold);
+      font-size: 1rem;
+      margin-bottom: 15px;
+    }
+
+    .footer__copy {
+      color: var(--text-muted);
+      font-size: 0.85rem;
+    }
+
+    /* ============================================
+       RESPONSIVE
+    ============================================ */
+    @media (max-width: 768px) {
+      .navbar {
+        padding: 12px 20px;
+      }
+
+      .hamburger {
+        display: flex;
+      }
+
+      .navbar__links {
+        position: fixed;
+        top: 0;
+        right: -100%;
+        width: 280px;
+        height: 100vh;
+        background: var(--navy-dark);
+        flex-direction: column;
+        justify-content: center;
+        align-items: center;
+        gap: 25px;
+        transition: right 0.4s ease;
+      }
+
+      .navbar__links.open {
+        right: 0;
+      }
+
+      .navbar__links a {
+        font-size: 1.1rem;
+      }
+
+      .reservation-section {
+        padding: 60px 15px;
+      }
+
+      .form-row {
+        grid-template-columns: 1fr;
+      }
+    }
+  </style>
+</head>
+<body>
+
+  <!-- ============================================
+       NAVBAR
+  ============================================ -->
+  <nav class="navbar" id="navbar">
+    <a href="index.html" class="navbar__logo">
+      <img src="assets/logo1.png" alt="Zenthos Restaurant">
+    </a>
+
+    <ul class="navbar__links" id="navLinks">
+      <li><a href="index.html" onclick="closeMenu()">Home</a></li>
+      <li><a href="menu.html" onclick="closeMenu()">Menu</a></li>
+      <li><a href="about.html" onclick="closeMenu()">About</a></li>
+      <li><a href="gallery.html" onclick="closeMenu()">Gallery</a></li>
+      <li><a href="reservations.html" onclick="closeMenu()">Reservations</a></li>
+      <li><a href="contact.html" onclick="closeMenu()">Contact</a></li>
+    </ul>
+
+    <div class="hamburger" id="hamburger" onclick="toggleMenu()">
+      <span></span>
+      <span></span>
+      <span></span>
+    </div>
+  </nav>
+
+  <!-- ============================================
+       HERO SECTION
+  ============================================ -->
+  <!-- 📸 REPLACE WITH PHOTO: Hero background - elegant table setting with candles and Greek decor -->
+  <section class="hero">
+    <div class="hero__content">
+      <h1 class="hero__title">Reserve Your Table</h1>
+      <p class="hero__subtitle">We look forward to welcoming you</p>
+    </div>
+  </section>
+
+  <!-- ============================================
+       RESERVATION FORM
+  ============================================ -->
+  <section class="reservation-section">
+    <div class="reservation-wrapper reveal">
+
+      <!--
+        ✏️ MAILERLITE SETUP:
+        1. Go to https://dashboard.mailerlite.com
+        2. Click "Forms" → "Create form" → "Embedded form"
+        3. Copy your form's action URL and paste it in the action="" below
+        4. Or use MailerLite's JavaScript embed and replace this entire form
+      -->
+      <form id="reservationForm" action="REPLACE_WITH_MAILERLITE_FORM_URL" method="POST">
+
+        <div class="form-row">
+          <div class="form-group">
+            <label for="name">Full Name</label>
+            <input type="text" id="name" name="name" required placeholder="Your full name">
+            <span class="error-message">Please enter your name.</span>
+          </div>
+          <div class="form-group">
+            <label for="email">Email</label>
+            <input type="email" id="email" name="email" required placeholder="your@email.com">
+            <span class="error-message">Please enter a valid email address.</span>
+          </div>
+        </div>
+
+        <div class="form-row">
+          <div class="form-group">
+            <label for="phone">Phone</label>
+            <input type="tel" id="phone" name="phone" placeholder="Your phone number">
+            <span class="error-message">Please enter a valid phone number.</span>
+          </div>
+          <div class="form-group">
+            <label for="date">Date</label>
+            <input type="date" id="date" name="date" required>
+            <span class="error-message">Please select a date that is not in the past.</span>
+          </div>
+        </div>
+
+        <div class="form-row">
+          <div class="form-group">
+            <label for="time">Time</label>
+            <select id="time" name="time" required>
+              <option value="" disabled selected>Select a time</option>
+              <option value="12:00">12:00</option>
+              <option value="13:00">13:00</option>
+              <option value="14:00">14:00</option>
+              <option value="19:00">19:00</option>
+              <option value="20:00">20:00</option>
+              <option value="21:00">21:00</option>
+              <option value="22:00">22:00</option>
+            </select>
+            <span class="error-message">Please select a time.</span>
+          </div>
+          <div class="form-group">
+            <label for="guests">Number of Guests</label>
+            <select id="guests" name="guests" required>
+              <option value="" disabled selected>Select guests</option>
+              <option value="1">1</option>
+              <option value="2">2</option>
+              <option value="3">3</option>
+              <option value="4">4</option>
+              <option value="5">5</option>
+              <option value="6">6</option>
+              <option value="7">7</option>
+              <option value="8">8</option>
+              <option value="9">9</option>
+              <option value="10+">10+</option>
+            </select>
+            <span class="error-message">Please select the number of guests.</span>
+          </div>
+        </div>
+
+        <div class="form-group">
+          <label for="requests">Special Requests</label>
+          <textarea id="requests" name="requests" placeholder="Any dietary requirements, celebrations, or seating preferences..."></textarea>
+        </div>
+
+        <button type="submit" class="btn-submit">Reserve My Table</button>
+      </form>
+
+      <div class="thank-you" id="thankYou">
+        <div class="thank-you__icon">
+          <i class="fas fa-circle-check"></i>
+        </div>
+        <h2 class="thank-you__heading">Thank you!</h2>
+        <p class="thank-you__text">We'll be in touch shortly.</p>
+      </div>
+
+    </div>
+  </section>
+
+  <!-- ============================================
+       FOOTER
+  ============================================ -->
+  <footer class="footer">
+    <div class="footer__logo">
+      <img src="assets/logo1.png" alt="Zenthos Restaurant">
+    </div>
+    <p class="footer__tagline">More than food, a Greek vibe</p>
+    <p class="footer__copy">&copy; 2026 Zenthos Restaurant. All rights reserved. | Paralia Katerini, Greece</p>
+  </footer>
+
+  <!-- ============================================
+       JAVASCRIPT
+  ============================================ -->
+  <script>
+    // ---- Navbar scroll ----
+    const navbar = document.getElementById('navbar');
+    window.addEventListener('scroll', () => {
+      if (window.scrollY > 50) {
+        navbar.classList.add('scrolled');
+      } else {
+        navbar.classList.remove('scrolled');
+      }
+    });
+
+    // ---- Hamburger menu ----
+    const hamburger = document.getElementById('hamburger');
+    const navLinks = document.getElementById('navLinks');
+
+    function toggleMenu() {
+      hamburger.classList.toggle('active');
+      navLinks.classList.toggle('open');
+    }
+
+    function closeMenu() {
+      hamburger.classList.remove('active');
+      navLinks.classList.remove('open');
+    }
+
+    // ---- Scroll reveal ----
+    const revealElements = document.querySelectorAll('.reveal');
+    const revealObserver = new IntersectionObserver((entries) => {
+      entries.forEach(entry => {
+        if (entry.isIntersecting) {
+          entry.target.classList.add('visible');
+        }
+      });
+    }, { threshold: 0.15 });
+
+    revealElements.forEach(el => revealObserver.observe(el));
+
+    // ---- Form validation & submission ----
+    const form = document.getElementById('reservationForm');
+    const thankYou = document.getElementById('thankYou');
+
+    function clearErrors() {
+      document.querySelectorAll('.form-group').forEach(group => {
+        group.classList.remove('has-error');
+      });
+    }
+
+    function showError(field, message) {
+      const group = field.closest('.form-group');
+      const errorSpan = group.querySelector('.error-message');
+      if (message) {
+        errorSpan.textContent = message;
+      }
+      group.classList.add('has-error');
+    }
+
+    function validateForm() {
+      clearErrors();
+      let isValid = true;
+
+      // Full Name
+      const name = document.getElementById('name');
+      if (!name.value.trim()) {
+        showError(name, 'Please enter your name.');
+        isValid = false;
+      }
+
+      // Email
+      const email = document.getElementById('email');
+      const emailPattern = /^[^\s@]+@[^\s@]+\.[^\s@]+$/;
+      if (!email.value.trim()) {
+        showError(email, 'Please enter your email address.');
+        isValid = false;
+      } else if (!emailPattern.test(email.value.trim())) {
+        showError(email, 'Please enter a valid email address.');
+        isValid = false;
+      }
+
+      // Date
+      const date = document.getElementById('date');
+      if (!date.value) {
+        showError(date, 'Please select a date.');
+        isValid = false;
+      } else {
+        const today = new Date();
+        today.setHours(0, 0, 0, 0);
+        const selected = new Date(date.value + 'T00:00:00');
+        if (selected < today) {
+          showError(date, 'Please select a date that is not in the past.');
+          isValid = false;
+        }
+      }
+
+      // Time
+      const time = document.getElementById('time');
+      if (!time.value) {
+        showError(time, 'Please select a time.');
+        isValid = false;
+      }
+
+      // Guests
+      const guests = document.getElementById('guests');
+      if (!guests.value) {
+        showError(guests, 'Please select the number of guests.');
+        isValid = false;
+      }
+
+      return isValid;
+    }
+
+    form.addEventListener('submit', function(e) {
+      e.preventDefault();
+
+      if (!validateForm()) {
+        return;
+      }
+
+      // Submit the form data via fetch
+      const formData = new FormData(form);
+
+      fetch(form.action, {
+        method: 'POST',
+        body: formData,
+        headers: {
+          'Accept': 'application/json'
+        }
+      }).then(response => {
+        form.style.display = 'none';
+        thankYou.classList.add('visible');
+      }).catch(error => {
+        // Still show thank you on error (Formspree ID not set yet)
+        form.style.display = 'none';
+        thankYou.classList.add('visible');
+      });
+    });
+  </script>
+</body>
+
+
+
+
+<a href="https://wa.me/40743343917" target="_blank" class="whatsapp-float" title="Book via WhatsApp">
+  <svg xmlns="http://www.w3.org/2000/svg" viewBox="0 0 24 24" fill="white" width="30" height="30">
+    <path d="M17.472 14.382c-.297-.149-1.758-.867-2.03-.967-.273-.099-.471-.148-.67.15-.197.297-.767.966-.94 1.164-.173.199-.347.223-.644.075-.297-.15-1.255-.463-2.39-1.475-.883-.788-1.48-1.761-1.653-2.059-.173-.297-.018-.458.13-.606.134-.133.298-.347.446-.52.149-.174.198-.298.298-.497.099-.198.05-.371-.025-.52-.075-.149-.669-1.612-.916-2.207-.242-.579-.487-.5-.669-.51-.173-.008-.371-.01-.57-.01-.198 0-.52.074-.792.372-.272.297-1.04 1.016-1.04 2.479 0 1.462 1.065 2.875 1.213 3.074.149.198 2.096 3.2 5.077 4.487.709.306 1.262.489 1.694.625.712.227 1.36.195 1.871.118.571-.085 1.758-.719 2.006-1.413.248-.694.248-1.289.173-1.413-.074-.124-.272-.198-.57-.347m-5.421 7.403h-.004a9.87 9.87 0 01-5.031-1.378l-.361-.214-3.741.982.998-3.648-.235-.374a9.86 9.86 0 01-1.51-5.26c.001-5.45 4.436-9.884 9.888-9.884 2.64 0 5.122 1.03 6.988 2.898a9.825 9.825 0 012.893 6.994c-.003 5.45-4.437 9.884-9.885 9.884m8.413-18.297A11.815 11.815 0 0012.05 0C5.495 0 .16 5.335.157 11.892c0 2.096.547 4.142 1.588 5.945L.057 24l6.305-1.654a11.882 11.882 0 005.683 1.448h.005c6.554 0 11.89-5.335 11.893-11.893a11.821 11.821 0 00-3.48-8.413Z"/>
+  </svg>
+</a>
+
+<style>
+.whatsapp-float {
+  position: fixed;
+  bottom: 24px;
+  right: 24px;
+  background-color: #25D366;
+  border-radius: 50%;
+  width: 60px;
+  height: 60px;
+  display: flex;
+  align-items: center;
+  justify-content: center;
+  box-shadow: 0 4px 15px rgba(37, 211, 102, 0.4);
+  z-index: 9999;
+  animation: whatsapp-pulse 2s infinite;
+  text-decoration: none;
+}
+.whatsapp-float:hover { background-color: #1ebe5d; transform: scale(1.1); }
+@keyframes whatsapp-pulse {
+  0% { box-shadow: 0 0 0 0 rgba(37, 211, 102, 0.5); }
+  70% { box-shadow: 0 0 0 15px rgba(37, 211, 102, 0); }
+  100% { box-shadow: 0 0 0 0 rgba(37, 211, 102, 0); }
+}
+</style>
+
+
+
+
+
+
+</html>
