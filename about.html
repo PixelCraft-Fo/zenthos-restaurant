@@ -456,6 +456,61 @@
                 font-size: 1.8rem;
             }
         }
+
+
+
+
+
+/* ── MOBILE FIX: Team cards ── */
+@media (max-width: 480px) {
+    .team-cards {
+        grid-template-columns: 1fr 1fr;
+        gap: 1rem;
+    }
+
+    .team-card {
+        padding: 1rem;
+    }
+
+    .team-photo {
+        width: 100px;
+        height: 100px;
+    }
+
+    .team-card h3 {
+        font-size: 1rem;
+    }
+
+    .team-card .role {
+        font-size: 0.8rem;
+    }
+}
+
+/* ── MOBILE FIX: Boat cards ── */
+@media (max-width: 768px) {
+    .section {
+        padding: 3rem 1rem;
+    }
+
+    /* Boat grid: 1 coloana pe mobil */
+    div[style*="grid-template-columns: 1fr 1fr"] {
+        display: flex !important;
+        flex-direction: column !important;
+        gap: 1.5rem !important;
+    }
+
+    /* Shore Dining: title + price sa nu iasa din rand */
+    div[style*="display:flex; justify-content:center; align-items:center; gap:1rem"] {
+        flex-direction: column !important;
+        gap: 0.5rem !important;
+    }
+}
+
+
+
+
+
+        
     </style>
 </head>
 <body>
